@@ -1,0 +1,15 @@
+{
+  "name": "idr-syn",
+  "version": "1.0.3",
+  "description": "synjones iDR sdk for node addon",
+  "main": "index.js",
+  "gypfile": true,
+  "scripts":{
+    "build": "node-gyp rebuild --arch=ia32 --msvs_version=2013",
+    "copy": "copy build\\Release\\SynIDCard.node bin\\SynIDCard.node",
+    "install": "npm run build && npm run copy",
+    "test": "node test.js"
+  },
+  "dependencies": {
+  }
+}
