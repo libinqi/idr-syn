@@ -1,6 +1,6 @@
 {
   "name": "idr-syn",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "synjones iDR sdk for node addon",
   "main": "index.js",
   "gypfile": true,
@@ -11,5 +11,14 @@
     "test": "node test.js"
   },
   "dependencies": {
+  },
+  "author": {
+    "email": "libinqi@outlook.com",
+    "name": "libinqi"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/libinqi/idr-syn.git"
   }
 }
