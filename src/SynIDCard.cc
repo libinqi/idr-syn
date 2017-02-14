@@ -307,24 +307,33 @@ void SynIDCard::DR_Start_RealReadCard(const FunctionCallbackInfo<Value> &args)
     HandleScope scope(isolate);
 
     int iPort = args[0]->Int32Value();
-    int result = Syn_OpenPort(iPort);
+    int result = Syn_ClosePort(iPort);
 
     if (result == 0)
     {
-        baton = new DelayBaton;
-        baton->iPort = iPort;
-        baton->request.data = baton;
-        baton->cbRealDataCallback.Reset(isolate, Persistent<Function>::Persistent(isolate, Local<Function>::Cast(args[1])));
-        baton->cbErrorCallback.Reset(isolate, Persistent<Function>::Persistent(isolate, Local<Function>::Cast(args[2])));
+		result = Syn_OpenPort(iPort);
 
-        // 事件循环队列异步函数
-        // node.js默认事件循环机制
-        uv_loop_t *loop = uv_default_loop();
-        uv_async_init(loop, &baton->async_request, (uv_async_cb)DelayAsyncAfter);
-        uv_queue_work(loop, &baton->request, Delay, DelayAfter);
-        uv_run(loop, UV_RUN_NOWAIT);
+		if (result == 0)
+		{
+			baton = new DelayBaton;
+			baton->iPort = iPort;
+			baton->request.data = baton;
+			baton->cbRealDataCallback.Reset(isolate, Persistent<Function>::Persistent(isolate, Local<Function>::Cast(args[1])));
+			baton->cbErrorCallback.Reset(isolate, Persistent<Function>::Persistent(isolate, Local<Function>::Cast(args[2])));
 
-        args.GetReturnValue().Set(Number::New(isolate, 1));
+			// 事件循环队列异步函数
+			// node.js默认事件循环机制
+			uv_loop_t *loop = uv_default_loop();
+			uv_async_init(loop, &baton->async_request, (uv_async_cb)DelayAsyncAfter);
+			uv_queue_work(loop, &baton->request, Delay, DelayAfter);
+			uv_run(loop, UV_RUN_NOWAIT);
+
+			args.GetReturnValue().Set(Number::New(isolate, 1));
+		}
+		else
+		{
+			args.GetReturnValue().Set(Number::New(isolate, 0));
+		}
     }
     else
     {
